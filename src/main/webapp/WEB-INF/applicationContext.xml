@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+
+
+<!-- this is my class beans   -->
+    <bean id="customerService" class="com.spiderBooksShopping.service.CustomerServiceImpl">
+        <property name="customerDao" ref="customerDao"/>
+    </bean>
+    <bean id="customerDao" class="com.spiderBooksShopping.dao.CustomerDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+    <bean id="restService" class="com.spiderBooksShopping.restServices.RestServiceImpl">
+        <property name="restTemplate" ref="restTemplate"/>
+    </bean>
+
+    <!-- IF Server is Shot down -->
+   <!-- <bean id="bookService" class="com.spiderBooksShopping.restServices.BookServiceImpl">
+    </bean>-->
+    <!-- END Server Shot Down -->
+
+    <!-- this bean for creating for resource bundle for validation -->
+    <bean id="customerValidator" class="com.spiderBooksShopping.customValidator.CustomerValidator"/>
+
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="messages"/>
+    </bean>
+    <!--  this beans for data base connections  -->
+    <bean id="bookdb" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/bookwarehouse"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+    </bean>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="bookdb"/>
+    </bean>
+
+<!--  this beans for Rest Call  -->
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate" >
+        <property name="messageConverters">
+            <util:list>
+                <bean id="mappingJackson2HttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+            </util:list>
+        </property>
+    </bean>
+
+    <!-- Book Cart Beans -->
+    <bean id="bookCartService" class="com.spiderBooksShopping.service.BookCartServiceImpl">
+        <property name="bookCartDao" ref="bookCartDao"/>
+    </bean>
+    <bean id="bookCartDao" class="com.spiderBooksShopping.dao.BookCartDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
+</beans>
+
